@@ -1,0 +1,17 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: url_shorten
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: myuser
+            POSTGRES_PASSWORD: secret
+            POSTGRES_DB: url_shortening_service
+        ports:
+            - "5431:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+volumes:
+    postgres_data:
+
