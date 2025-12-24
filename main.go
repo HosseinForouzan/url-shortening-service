@@ -11,7 +11,7 @@ func main() {
 
 	conn := psql.New()
 	shortenSvc := shorten.New(conn)
-	a, err := shortenSvc.CreateService(shorten.ShortenRequest{URL: "salam"})
+	a, err := shortenSvc.CreateService(shorten.ShortenRequest{URL: "go.dev.pkg"})
 	if err != nil {
 		fmt.Println(err.Error())
 	}

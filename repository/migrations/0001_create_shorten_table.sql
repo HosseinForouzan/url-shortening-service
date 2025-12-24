@@ -1,10 +1,10 @@
 -- +migrate Up
-CREATE TABLE short_url(
+CREATE TABLE urls(
     id SERIAL PRIMARY KEY,
     long_url Text NOT NULL,
     short_code VARCHAR(11) UNIQUE,
-    created_at TIMESTAMP DEFAULT now(),
-    updated_at TIMESTAMP DEFAULT now()
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
    
 );
 
