@@ -1,9 +1,10 @@
 package shorten
 
 import (
-	"example/url-shortening-service/url-shortening-service/entity"
 	"fmt"
 	"time"
+
+	"github.com/HosseinForouzan/url-shortening-service/entity"
 )
 
 const LengthOfShortCode = 7
