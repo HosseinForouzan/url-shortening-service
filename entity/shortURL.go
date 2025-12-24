@@ -5,7 +5,7 @@ import (
 )
 
 type ShortURL struct {
-    ID        string    `json:"id"`
+    ID        int   `json:"id"`
     URL       string    `json:"url"`
     ShortCode string    `json:"shortCode"`
     CreatedAt time.Time `json:"createdAt"`
