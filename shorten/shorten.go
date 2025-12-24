@@ -11,7 +11,7 @@ const LengthOfShortCode = 7
 
 type Repository interface {
 	IsShortCodeUnique(shortCode string) (bool, error)
-	Create(ShortURL entity.ShortURL) (entity.ShortURL, error)
+	Create(sh entity.ShortURL) (entity.ShortURL, error)
 }
 
 type Shorten struct {
