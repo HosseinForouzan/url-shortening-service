@@ -11,10 +11,10 @@ const LengthOfShortCode = 7
 
 type Repository interface {
 	CheckExistenceOfShortCode(shortCode string)(bool, error)
-	// CheckExistenceOfURL(url string)(bool, error)
 	Create(sh entity.ShortURL) (entity.ShortURL, error)
 	Read(shortCode string) (entity.ShortURL, error)
 	Update(short_code, url string) (entity.ShortURL, error)
+	Delete(shortCode string) (error)
 }
 
 type Shorten struct {
@@ -121,6 +121,32 @@ func (s Shorten) UpdateService(req UpdateRequest) (UpdateResponse, error) {
 	}
 
 	return UpdateResponse{ShortURL: updatedShortUrl}, nil
+
+}
+
+type DeleteRequest struct {
+	ShortCode string `json:"short_code"`
+}
+
+type DeleteResponse struct {
+	Message string `json:"message"`
+}
+
+
+func (s Shorten) DeleteService(req DeleteRequest) (DeleteResponse, error) {
+	//the function CheckExistenceOfShortCode return true if short code doesn't exist 
+	if doesShortCodeExist, _ := s.repo.CheckExistenceOfShortCode(req.ShortCode); doesShortCodeExist {
+		return  DeleteResponse{} ,fmt.Errorf("This shortcode doesn't exist")
+	}
+
+	err := s.repo.Delete(req.ShortCode)
+	if err != nil {
+		return DeleteResponse{} ,fmt.Errorf("can't delete record %w", err)
+	}
+
+	return DeleteResponse{Message: "recored deleted"} ,nil
+
+
 
 
 }

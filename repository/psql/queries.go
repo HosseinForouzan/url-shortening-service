@@ -62,3 +62,12 @@ func (p *psqlDB) Update(shortCode, url string) (entity.ShortURL, error) {
 	return shortUrl, nil
 
 }
+
+func (p *psqlDB) Delete(shortCode string) (error) {
+	_, err := p.db.Exec(context.Background(), "DELETE FROM urls WHERE short_code=$1", shortCode)
+	if err != nil {
+		fmt.Errorf("can't delete data %w", err)
+	}
+
+	return nil
+}

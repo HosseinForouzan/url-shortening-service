@@ -40,8 +40,8 @@ func (s Server) UpdateHandler(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	url := c.Param("url")
-	req.ShortCode = url
+	short_code := c.Param("short_code")
+	req.ShortCode = short_code
 	
 
 	resp, err := s.ShortenSvc.UpdateService(req)
@@ -50,5 +50,19 @@ func (s Server) UpdateHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, resp)
+
+}
+
+func (s Server) DeleteHandler(c echo.Context) error {
+	shortCode := c.Param("short_code")
+	req := shorten.DeleteRequest{ShortCode: shortCode}
+
+	resp, err := s.ShortenSvc.DeleteService(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusNoContent, resp)
+
 
 }
