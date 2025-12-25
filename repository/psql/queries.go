@@ -3,6 +3,7 @@ package psql
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/HosseinForouzan/url-shortening-service/entity"
 	"github.com/jackc/pgx/v5"
@@ -48,4 +49,16 @@ func (p *psqlDB) Read(shortCode string) (entity.ShortURL, error) {
 
 	return shortUrl, nil
 	
+}
+
+func (p *psqlDB) Update(shortCode, url string) (entity.ShortURL, error) {
+	var shortUrl entity.ShortURL
+	err := p.db.QueryRow(context.Background(), "UPDATE urls SET long_url=$1, updated_at=$2 WHERE short_code =$3 RETURNING id, long_url, short_code, created_at, updated_at" ,
+	 url, time.Now(),shortCode ).Scan(&shortUrl.ID, &shortUrl.URL, &shortUrl.ShortCode, &shortUrl.CreatedAt, &shortUrl.UpdatedAt)
+	 	if err != nil {
+		return entity.ShortURL{}, fmt.Errorf("can't update data %w", err)
+	}
+
+	return shortUrl, nil
+
 }

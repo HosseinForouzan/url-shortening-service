@@ -11,8 +11,10 @@ const LengthOfShortCode = 7
 
 type Repository interface {
 	CheckExistenceOfShortCode(shortCode string)(bool, error)
+	// CheckExistenceOfURL(url string)(bool, error)
 	Create(sh entity.ShortURL) (entity.ShortURL, error)
 	Read(shortCode string) (entity.ShortURL, error)
+	Update(short_code, url string) (entity.ShortURL, error)
 }
 
 type Shorten struct {
@@ -73,13 +75,12 @@ type RetireveRequest struct {
 
 type RetireveResponse struct {
 	ShortURL entity.ShortURL `json:"short_url"`
-	Message string `json:"message"`
 }
 
 func (s Shorten) RetrieveService(req RetireveRequest) (RetireveResponse, error) {
 	//the function CheckExistenceOfShortCode return true if short code doesn't exist 
 	if doesShortCodeExist, _ := s.repo.CheckExistenceOfShortCode(req.ShortCode); doesShortCodeExist {
-		return RetireveResponse{Message: "This shortcode doesn't exist"}, nil
+		return RetireveResponse{}, fmt.Errorf("This shortcode doesn't exist")
 	}
 
 	RetrievedData, err := s.repo.Read(req.ShortCode)
@@ -96,4 +97,30 @@ func (s Shorten) RetrieveService(req RetireveRequest) (RetireveResponse, error) 
 	}
 
 	return RetireveResponse{ShortURL: shortUrl}, nil
+}
+
+type UpdateRequest struct {
+	URL string `json:"url"`
+	ShortCode string `json:"short_code"`
+}
+
+type UpdateResponse struct {
+	ShortURL entity.ShortURL `json:"short_url"`
+}
+
+func (s Shorten) UpdateService(req UpdateRequest) (UpdateResponse, error) {
+	//the function CheckExistenceOfShortCode return true if short code doesn't exist 
+	if doesShortCodeExist, _ := s.repo.CheckExistenceOfShortCode(req.ShortCode); doesShortCodeExist {
+		return UpdateResponse{}, fmt.Errorf("This shortcode doesn't exist")
+	}
+
+	updatedShortUrl, err := s.repo.Update(req.ShortCode, req.URL)
+	fmt.Println(req.ShortCode, req.URL)
+	if err != nil{
+		return UpdateResponse{}, fmt.Errorf("can't update record %w", err)
+	}
+
+	return UpdateResponse{ShortURL: updatedShortUrl}, nil
+
+
 }
