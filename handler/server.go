@@ -34,7 +34,8 @@ func (s Server) SetRoutes() {
 	
 	shorten := e.Group("/shorten")
 
-	shorten.POST("/create", s.CreateHandler)
+	shorten.POST("/", s.CreateHandler)
+	shorten.GET("/:short_code", s.ReadHandler)
 
 	// Start server
 	if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {

@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (p *psqlDB) IsShortCodeUnique(shortCode string) (bool, error) {
+func (p *psqlDB) CheckExistenceOfShortCode(shortCode string) (bool, error) {
 	var id int
 	err := p.db.QueryRow(context.Background(), "SELECT id FROM urls WHERE short_code = $1", shortCode).Scan(&id)
 	if err != nil {
@@ -20,6 +20,8 @@ func (p *psqlDB) IsShortCodeUnique(shortCode string) (bool, error) {
 
 	return false, nil
 }
+
+
 
 func (p *psqlDB) Create(sh entity.ShortURL) (entity.ShortURL, error) {
 	var id int
@@ -36,3 +38,14 @@ func (p *psqlDB) Create(sh entity.ShortURL) (entity.ShortURL, error) {
 	
 }
 
+func (p *psqlDB) Read(shortCode string) (entity.ShortURL, error) {
+	var shortUrl entity.ShortURL
+	err := p.db.QueryRow(context.Background(), "SELECT * FROM urls WHERE short_code = $1", shortCode).Scan(
+		&shortUrl.ID, &shortUrl.URL, &shortUrl.ShortCode, &shortUrl.CreatedAt, &shortUrl.UpdatedAt)
+	if err != nil {
+		return entity.ShortURL{}, fmt.Errorf("can't read data %w", err)
+	}
+
+	return shortUrl, nil
+	
+}
