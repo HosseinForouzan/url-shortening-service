@@ -41,7 +41,8 @@ func (p *psqlDB) Create(sh entity.ShortURL) (entity.ShortURL, error) {
 
 func (p *psqlDB) Read(shortCode string) (entity.ShortURL, error) {
 	var shortUrl entity.ShortURL
-	err := p.db.QueryRow(context.Background(), "SELECT * FROM urls WHERE short_code = $1", shortCode).Scan(
+	err := p.db.QueryRow(context.Background(),
+	 "SELECT id, long_url, short_code, created_at, updated_at FROM urls WHERE short_code = $1", shortCode).Scan(
 		&shortUrl.ID, &shortUrl.URL, &shortUrl.ShortCode, &shortUrl.CreatedAt, &shortUrl.UpdatedAt)
 	if err != nil {
 		return entity.ShortURL{}, fmt.Errorf("can't read data %w", err)
@@ -70,4 +71,26 @@ func (p *psqlDB) Delete(shortCode string) (error) {
 	}
 
 	return nil
+}
+
+func (p *psqlDB) IncrementVisit(shortCode string) error {
+	_, err := p.db.Exec(context.Background(), "UPDATE urls SET visits = visits + 1 WHERE short_code = $1",shortCode )
+	if err != nil {
+		fmt.Errorf("can't increment visits %w", err)
+	}
+
+	return nil
+}
+
+func (p *psqlDB) GetStats(shortCode string) (entity.Stats, error) {
+	var stats entity.Stats
+	err := p.db.QueryRow(context.Background(),
+	 "SELECT id, long_url, short_code, created_at, updated_at, visits FROM urls WHERE short_code = $1", shortCode).Scan(
+		&stats.ShortURL.ID, &stats.ShortURL.URL, &stats.ShortURL.ShortCode, &stats.ShortURL.CreatedAt, &stats.ShortURL.UpdatedAt, &stats.Visits)
+	if err != nil {
+		return entity.Stats{}, fmt.Errorf("can't get stats %w", err)
+	}
+
+	return stats, nil 
+	
 }

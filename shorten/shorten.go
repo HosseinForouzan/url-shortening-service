@@ -10,11 +10,13 @@ import (
 const LengthOfShortCode = 7
 
 type Repository interface {
+	IncrementVisit(shortCode string) (error)
 	CheckExistenceOfShortCode(shortCode string)(bool, error)
 	Create(sh entity.ShortURL) (entity.ShortURL, error)
 	Read(shortCode string) (entity.ShortURL, error)
 	Update(short_code, url string) (entity.ShortURL, error)
 	Delete(shortCode string) (error)
+	GetStats(shortCode string) (entity.Stats, error)
 }
 
 type Shorten struct {
@@ -96,6 +98,8 @@ func (s Shorten) RetrieveService(req RetireveRequest) (RetireveResponse, error) 
 		UpdatedAt: RetrievedData.UpdatedAt,
 	}
 
+	s.repo.IncrementVisit(req.ShortCode)
+
 	return RetireveResponse{ShortURL: shortUrl}, nil
 }
 
@@ -147,6 +151,37 @@ func (s Shorten) DeleteService(req DeleteRequest) (DeleteResponse, error) {
 	return DeleteResponse{Message: "recored deleted"} ,nil
 
 
+}
 
+type StatsRequest struct {
+	ShortCode string `json:"short_cde"`
+}
 
+type StatsResponse struct {
+	Stats entity.Stats `json:"stats"`
+}
+
+func (s Shorten) GetStatsService(req StatsRequest) (StatsResponse, error) {
+		//the function CheckExistenceOfShortCode return true if short code doesn't exist 
+	if doesShortCodeExist, _ := s.repo.CheckExistenceOfShortCode(req.ShortCode); doesShortCodeExist {
+		return StatsResponse{}, fmt.Errorf("This shortcode doesn't exist")
+	}
+
+	RetrievedData, err := s.repo.GetStats(req.ShortCode)
+	if err != nil {
+		return StatsResponse{}, fmt.Errorf("can't retrieve stats %w", err)
+	}
+
+	stats := entity.Stats {
+		ShortURL: entity.ShortURL{
+			ID: RetrievedData.ShortURL.ID,
+			URL: RetrievedData.ShortURL.URL,
+			ShortCode: RetrievedData.ShortURL.ShortCode,
+			CreatedAt: RetrievedData.ShortURL.CreatedAt,
+			UpdatedAt: RetrievedData.ShortURL.UpdatedAt,
+		},
+		Visits: RetrievedData.Visits,	
+	}
+
+	return StatsResponse{Stats: stats}, nil
 }

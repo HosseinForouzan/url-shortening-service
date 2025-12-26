@@ -66,3 +66,15 @@ func (s Server) DeleteHandler(c echo.Context) error {
 
 
 }
+
+func (s Server) StatsHandler(c echo.Context) error {
+	shorCode := c.Param("short_code")
+	req := shorten.StatsRequest{ShortCode: shorCode}
+
+	resp, err := s.ShortenSvc.GetStatsService(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}

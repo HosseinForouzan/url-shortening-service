@@ -38,6 +38,7 @@ func (s Server) SetRoutes() {
 	shorten.GET("/:short_code", s.ReadHandler)
 	shorten.PUT("/:short_code", s.UpdateHandler)
 	shorten.DELETE("/:short_code", s.DeleteHandler)
+	shorten.GET("/:short_code/stats", s.StatsHandler)
 
 
 	// Start server
