@@ -9,4 +9,4 @@ CREATE TABLE urls(
 );
 
 -- +migrate Down
-DROP TABLE short_url;
+DROP TABLE urls;

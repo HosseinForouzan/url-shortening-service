@@ -12,3 +12,7 @@ type ShortURL struct {
     UpdatedAt time.Time `json:"updatedAt"`
 }
 
+type VisitURL struct {
+    ShortURL
+    Visits int
+}
