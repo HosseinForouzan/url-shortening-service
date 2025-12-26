@@ -98,7 +98,6 @@ func (s Shorten) RetrieveService(req RetireveRequest) (RetireveResponse, error) 
 		UpdatedAt: RetrievedData.UpdatedAt,
 	}
 
-	s.repo.IncrementVisit(req.ShortCode)
 
 	return RetireveResponse{ShortURL: shortUrl}, nil
 }

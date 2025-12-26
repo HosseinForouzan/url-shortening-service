@@ -15,23 +15,22 @@ type Server struct {
 }
 
 func New(shortenSvc shorten.Shorten) Server {
-	return Server{ShortenSvc: shortenSvc }
+	return Server{ShortenSvc: shortenSvc}
 
 }
-
-
 
 func (s Server) SetRoutes() {
 	e := echo.New()
 
-  // Middleware
+	// Middleware
 	e.Use(middleware.RequestLogger()) // use the default RequestLogger middleware with slog logger
-	e.Use(middleware.Recover()) // recover panics as errors for proper error handling
+	e.Use(middleware.Recover())       // recover panics as errors for proper error handling
 
 	// Routes
-	
+
 	e.GET("/", hello)
-	
+	e.GET("/:short_code", s.RedirectToURL)
+
 	shorten := e.Group("/shorten")
 
 	shorten.POST("/", s.CreateHandler)
@@ -39,7 +38,6 @@ func (s Server) SetRoutes() {
 	shorten.PUT("/:short_code", s.UpdateHandler)
 	shorten.DELETE("/:short_code", s.DeleteHandler)
 	shorten.GET("/:short_code/stats", s.StatsHandler)
-
 
 	// Start server
 	if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -49,5 +47,5 @@ func (s Server) SetRoutes() {
 }
 
 func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
+	return c.String(http.StatusOK, "Hello, World!")
 }

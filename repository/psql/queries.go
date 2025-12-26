@@ -91,6 +91,8 @@ func (p *psqlDB) GetStats(shortCode string) (entity.Stats, error) {
 		return entity.Stats{}, fmt.Errorf("can't get stats %w", err)
 	}
 
+	
+
 	return stats, nil 
 	
 }
