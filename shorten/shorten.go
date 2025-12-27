@@ -17,14 +17,21 @@ type Repository interface {
 	Update(short_code, url string) (entity.ShortURL, error)
 	Delete(shortCode string) (error)
 	GetStats(shortCode string) (entity.Stats, error)
+
+}
+
+type CachRepo interface {
+	CachSet(key string, value interface{}, expiration time.Duration) (string, error)
+	CachGet(key string) (string, error)
 }
 
 type Shorten struct {
 	repo Repository
+	cachRepo CachRepo
 }
 
-func New(repo Repository) Shorten {
-	return Shorten{repo: repo}
+func New(repo Repository, cachRepo CachRepo) Shorten {
+	return Shorten{repo: repo, cachRepo: cachRepo}
 }
 
 type ShortenRequest struct {

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"time"
+
 
 	"github.com/HosseinForouzan/url-shortening-service/handler"
 	"github.com/HosseinForouzan/url-shortening-service/repository/psql"
@@ -13,22 +11,13 @@ import (
 
 func main() {
 
-    rdb := redis.New()
-    res, err := rdb.RedisSet(context.Background(), "hossein", "salam", 1 * time.Hour)
-    if err != nil {
-        fmt.Println(err)
-    }
-
-    fmt.Println(res)
-
-    a, _ := rdb.RedisGet(context.Background(), "hossein")
-    fmt.Println(a)
 
 	
 
 
 	conn := psql.New()
-	shortenSvc := shorten.New(conn)
+    rdb := redis.New()
+	shortenSvc := shorten.New(conn, rdb)
 
 	shortHandler := handler.New(shortenSvc)
 	shortHandler.SetRoutes()
