@@ -71,7 +71,7 @@ http://localhost:8080/
   "updatedAt": "2021-09-01T12:00:00Z"
 }
 ```
-### Retrieve Original URL
+### Update Short URL
 
 **PUT** `/shorten/abc123`
 #### Response
@@ -86,7 +86,7 @@ http://localhost:8080/
 }
 ```
 
-### Retrieve Original URL
+### Delete Short URL
 
 **DELETE** `/shorten/abc123`
 
