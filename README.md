@@ -21,6 +21,7 @@ This shortening url API help users to shorten their long url and use short url i
 git clone https://github.com/HosseinForouzan/url-shortening-service
 cd url-shortening-service
 go mod tidy
+```
 
 ## API Reference
 ### Base URL
